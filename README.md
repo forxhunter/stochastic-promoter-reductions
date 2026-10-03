@@ -35,3 +35,7 @@ file in `benchmarking_results/` it writes. The table scripts write LaTeX files i
 `../../Supplementary_Material_v2_next_revision/generated/` and
 `../../ElsiverFSPromoter_v2_next_revision/generated/`; create these directories, or
 change the output paths at the top of each script.
+
+## License
+
+MIT (see `LICENSE`).

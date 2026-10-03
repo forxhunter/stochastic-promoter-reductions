@@ -1,0 +1,3 @@
+System,dt,Metric,Value,Speedup,RefTime
+Repressilator,0.05,PeriodError,2.273736754432321e-13,0.0296888673578041,1.0
+Repressilator,0.5,PeriodError,400.4004004004005,0.1446522102791011,1.0

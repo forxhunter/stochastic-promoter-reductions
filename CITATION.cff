@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+title: "Benchmarking reductions of stochastic promoter models: code and data"
+authors:
+  - family-names: Wu
+    given-names: Tianyu
+    affiliation: "University of Illinois at Urbana-Champaign"
+version: v1.0

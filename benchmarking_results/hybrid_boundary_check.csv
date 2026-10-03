@@ -1,0 +1,13 @@
+set,criterion,check,failures,detected,missed,false_alarms,correct_passes
+"development (NAR, PFB)",fraction > 0.1,first-order density,30,30,0,11,47
+"development (NAR, PFB)",fraction > 0.1,hybrid boundary divergence,30,30,0,31,27
+"development (NAR, PFB)",fraction > 0.1,exact hybrid density,30,27,3,17,41
+"development (NAR, PFB)",fraction > 0.1 or LNA variance error > 25%,first-order density,45,41,4,0,43
+"development (NAR, PFB)",fraction > 0.1 or LNA variance error > 25%,hybrid boundary divergence,45,45,0,16,27
+"development (NAR, PFB)",fraction > 0.1 or LNA variance error > 25%,exact hybrid density,45,41,4,3,40
+"test (SA, PFBC)",fraction > 0.1,first-order density,17,16,1,9,7
+"test (SA, PFBC)",fraction > 0.1,hybrid boundary divergence,17,17,0,9,7
+"test (SA, PFBC)",fraction > 0.1,exact hybrid density,17,14,3,6,10
+"test (SA, PFBC)",fraction > 0.1 or LNA variance error > 25%,first-order density,25,24,1,1,7
+"test (SA, PFBC)",fraction > 0.1 or LNA variance error > 25%,hybrid boundary divergence,25,25,0,1,7
+"test (SA, PFBC)",fraction > 0.1 or LNA variance error > 25%,exact hybrid density,25,20,5,0,8

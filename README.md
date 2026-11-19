@@ -16,6 +16,11 @@ Urbana-Champaign; submitted to the Journal of Theoretical Biology).
   `c1_scan.csv`), convergence checks of the metastable toggle rates
   (`revision_toggle_checks.py spectral_check`, `toggle_spectral_check.csv`), and label
   changes in the figure and table scripts. Results of v1.1 are unchanged.
+- `v1.3`: fixes `make_revision_tables.py`, which read `toggle_spectral_check.csv`
+  together with the spectral results and added empty rows to the table of
+  metastable rates; caption wording of two tables. The exact metastable rates in
+  Table 4 of the manuscript are the values `k_U_met` of `toggle_spectral_*.csv`.
+  No result changes.
 
 ## Contents
 

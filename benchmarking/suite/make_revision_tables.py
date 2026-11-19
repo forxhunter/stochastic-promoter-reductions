@@ -45,7 +45,7 @@ def boundary(out):
             PN[r.promoter], r.boundary, r.n_group, r.k_exit, r.s, r.theta_pred, r[100], r[400], r.rich))
     body = r"""\begin{table}[!htbp]
 \centering
-\caption{Boundary exponent of the stationary hybrid density (Section~\ref{si:boundary}). $\theta$: predicted exponent $sk_{\mathrm{exit}}/\gamma-1$, with $k_{\mathrm{exit}}$ the Perron eigenvalue of $-\mathbf Q_{gg}$ at the boundary and $|g|$ the number of states whose flow vanishes there. Fitted exponents from upwind finite volumes with 100 and 400 cells per decade, and the Richardson extrapolation $2\theta_{400}-\theta_{200}$ from 200 and 400 cells per decade ($\theta_{200}$ not shown). At the lower boundary of \arch{X}, $\mathbf Q_{gg}(0)$ is triangular (reducible), and the predicted value is that of its slowest class, which the fit range does not reach.}
+\caption{Boundary exponent of the stationary hybrid density (Section~\ref{si:boundary}). $\theta$: predicted exponent $sk_{\mathrm{exit}}/\gamma-1$, with $k_{\mathrm{exit}}$ the smallest eigenvalue of $-\mathbf Q_{gg}$ at the boundary (real by the Perron--Frobenius theorem) and $|g|$ the number of states whose flow vanishes there. Fitted exponents from upwind finite volumes with 100 and 400 cells per decade, and the Richardson extrapolation $2\theta_{400}-\theta_{200}$ from 200 and 400 cells per decade ($\theta_{200}$ not shown). At the lower boundary of \arch{X}, $\mathbf Q_{gg}(0)$ is triangular (reducible), and the predicted value is that of its slowest class, which the fit range does not reach.}
 \label{tab:si_boundary_exp}
 \footnotesize
 \begin{tabular}{llrrrrrrr}
@@ -266,7 +266,7 @@ arch. & method & $s$ & $\Omega$ & $k$ & $k_U$ & $k_V$ & change over $k$ & refine
 
 
 def toggle_spec(out):
-    d = pd.concat([pd.read_csv(p) for p in glob.glob(os.path.join(RES, "toggle_spectral_*.csv"))])
+    d = pd.concat([pd.read_csv(p) for p in [p for p in glob.glob(os.path.join(RES, "toggle_spectral_*.csv")) if "check" not in p]])
     d = d.sort_values(["omega", "s", "arch"])
     lines = []
     for _, r in d.iterrows():

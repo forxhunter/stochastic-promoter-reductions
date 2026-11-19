@@ -107,7 +107,8 @@ def lna_figure(df, fname):
 def arch_figure(ar, df, fname):
     """A: exact mean differences between S and two-state controls with the same
     response in the autoregulated genes, with the first-order QSS diffusion
-    prediction; B: CV differences; C: repressilator period; D: toggle escape rates."""
+    prediction; B: CV differences; C: repressilator period; D: toggle basin-crossing
+    frequencies (label-flip rates)."""
     ex = pd.read_csv(os.path.join(RES, "architecture_exact.csv"))
     qs = pd.read_csv(os.path.join(RES, "qss_diffusion.csv"))
     fig, axs = plt.subplots(2, 2, figsize=(10, 7.6))
@@ -175,7 +176,7 @@ def arch_figure(ar, df, fname):
     lo, hi = pooled.k_U.min(), pooled.k_U.max()
     ax.axhspan(lo, hi, color="0.7", alpha=0.4, lw=0, label="hybrid, H P S E M")
     ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlabel(r"$\Omega$"); ax.set_ylabel(r"escape rate from $U$-high basin")
+    ax.set_xlabel(r"$\Omega$"); ax.set_ylabel(r"basin-crossing frequency from $U$-high basin")
     ax.set_title(r"toggle switch, $s=1$", fontsize=10)
     ax.legend(fontsize=7.5, frameon=False, ncol=2)
     for a in axs.flat:

@@ -56,7 +56,7 @@ def main(out):
         ax.axhline(d.c1.iloc[0], color=PCOL[name], ls="--", lw=1.0)
     ax.plot([], [], color="0.4", ls="--", label=r"first order, $c_1 = 100R(x^*)/(\bar F' x^*)$")
     ax.set_xscale("log"); ax.set_xlabel(r"promoter speed factor $s$")
-    ax.set_ylabel(r"$s\times$[mean(P)/mean(F) $-$ 1]  (%)")
+    ax.set_ylabel(r"$s\times$[mean(promoter)/mean(F) $-$ 1]  (%)")
     ax.set_title(r"effect of $R$ on the mean ($\Omega=1$)", fontsize=10)
     ax.legend(frameon=False, loc="lower left")
 
@@ -82,7 +82,7 @@ def main(out):
         d = e1[(e1.promoter == name) & (e1.control == "F")].sort_values("s")
         ax.plot(d.s, d.dtau_int, color=PCOL[name], marker="o", ms=4, lw=1.4, label="%s vs F" % PNAME[name])
     ax.axhline(0, color="0.5", lw=0.8); ax.set_xscale("log")
-    ax.set_xlabel(r"promoter speed factor $s$"); ax.set_ylabel(r"integrated correlation time, P/F $-$ 1  (%)")
+    ax.set_xlabel(r"promoter speed factor $s$"); ax.set_ylabel(r"integrated correlation time, promoter/F $-$ 1  (%)")
     ax.set_title(r"temporal statistics with matched $\bar{r}(x)$ and $S_0(x)$", fontsize=10)
     ax.set_ylim(-15, 60)
     ax.legend(frameon=False, loc="upper left")
@@ -115,8 +115,8 @@ def main(out):
     h += [Line2D([], [], ls="", marker=CSTY[c][1], mfc="none", mec="k", label=CNAME[c].split(":")[0]) for c in ("C", "M", "L1", "L2")]
     ax.legend(handles=h, frameon=False, fontsize=7)
     ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlabel(r"$S_0$ mismatch $\langle|\ln(S_0^{C}/S_0^{P})|\rangle_P$")
-    ax.set_ylabel(r"$|$mean(P)/mean(C) $-$ 1$|$  (%)")
+    ax.set_xlabel(r"$S_0$ mismatch $\langle|\ln(S_0^{\mathrm{control}}/S_0^{\mathrm{promoter}})|\rangle_{\mathrm{promoter}}$")
+    ax.set_ylabel(r"$|$mean(promoter)/mean(control) $-$ 1$|$  (%)")
     clean(ax); fig.tight_layout()
     fig.savefig(os.path.join(out, "s0_mismatch.pdf"))
 

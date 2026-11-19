@@ -19,7 +19,10 @@ R1.6 and R1.7 of JTB-D-26-01677).
    inflated by recrossings; the ratio of the label-flip rate to it measures the
    recrossing effect.
 Writes benchmarking_results/revision/toggle_truncation.csv and toggle_spectral.csv.
+3. spectral_check: residuals of the left and right eigenvectors and box-size convergence
+   of the metastable rates for H and P at Omega = 1 and S and Q at Omega = 0.3 (s = 1).
 Usage: revision_toggle_checks.py truncation|spectral ARCHS OMEGAS [S] [METHOD] [K_LIST]
+       revision_toggle_checks.py spectral_check
 """
 import os, sys, time
 import numpy as np, pandas as pd
@@ -163,8 +166,72 @@ def task_spectral(archs, oms, s_list, method, k=7):
     set_box(7)
 
 
+def task_spectral_check(cases, ks=(5, 7, 9), method="ssa"):
+    """Convergence of the metastable rates (second-round revision): for each (arch, Omega, s)
+    and box size k, lambda_1, lambda_2, the relative eigen-residual
+    ||Q psi - lambda psi|| / (|lambda| ||psi||) of the right eigenvector, the residual of
+    the left eigenvector (the stationary-weighted vector p psi*, from a second
+    shift-invert solve on Q^T), the backward error |r|_1/(|Q|_1 |psi|_1), the first-order
+    relative eigenvalue error bound |r| |phi| / (|phi^T psi| |lambda_1|), and the eigenpair
+    and metastable rates after two steps of inverse iteration. Writes
+    toggle_spectral_check.csv."""
+    path = os.path.join(OUT, "toggle_spectral_check.csv")
+    rows = []
+    for arch, om, s in cases:
+        M = model(arch)
+        for k in ks:
+            set_box(k)
+            t0 = time.time()
+            L = label_generator(M, om, s, method == "sqssa")
+            (p, res, neg), _ = stationary_refined(L["G"], anchor_of(L, om))
+            ns = L["ns"]; pm = p[:ns] + p[ns:]
+            Qb = sp.coo_matrix((L["vals"], (L["rows"], L["cols"])), shape=(ns, ns)).tocsr()
+            Qb = (Qb - sp.diags(np.asarray(Qb.sum(axis=1)).ravel())).tocsc()
+            ev, W = spla.eigs(Qb, k=4, sigma=1e-9, which="LM", tol=1e-12, ncv=24)
+            o = np.argsort(np.abs(ev)); ev = ev[o]; W = W[:, o]
+            lam1, lam2 = ev[1], ev[2]; psi = W[:, 1]
+            res_r = np.linalg.norm(Qb @ psi - lam1 * psi) / (abs(lam1) * np.linalg.norm(psi))
+            evl, Wl = spla.eigs(Qb.T.tocsc(), k=4, sigma=1e-9, which="LM", tol=1e-12, ncv=24)
+            ol = np.argsort(np.abs(evl)); evl = evl[ol]; phi = Wl[:, ol[1]]
+            res_l = np.linalg.norm(Qb.T @ phi - evl[1] * phi) / (abs(evl[1]) * np.linalg.norm(phi))
+            psi = np.real(psi); phi = np.real(phi)
+            # backward error and first-order eigenvalue error bound |r| |phi| / |phi^T psi|
+            r = Qb @ psi - lam1.real * psi
+            normQ = spla.norm(Qb, 1)
+            back = np.linalg.norm(r, 1) / (normQ * np.linalg.norm(psi, 1))
+            bound = np.linalg.norm(r) * np.linalg.norm(phi) / abs(np.dot(phi, psi)) / abs(lam1.real)
+            inU = L["U"] > 2 * L["V"]; inV = L["U"] < 0.5 * L["V"]
+
+            def basin_PU(v):
+                vU = np.dot(pm[inU], v[inU]) / pm[inU].sum(); vV = np.dot(pm[inV], v[inV]) / pm[inV].sum()
+                return float(np.dot(pm, np.clip((v - vV) / (vU - vV), 0.0, 1.0)))
+            PU = basin_PU(psi)
+            # two steps of inverse iteration with shift lambda_1, Rayleigh quotient with the left vector
+            lu = spla.splu((Qb - lam1.real * sp.identity(ns, format="csc")).tocsc())
+            y = psi.copy()
+            for _ in range(2):
+                y = lu.solve(y); y /= np.linalg.norm(y)
+            lam_ref = np.dot(phi, Qb @ y) / np.dot(phi, y)
+            res_ref = np.linalg.norm(Qb @ y - lam_ref * y) / (abs(lam_ref) * np.linalg.norm(y))
+            PU_ref = basin_PU(y)
+            a1 = abs(lam1.real)
+            rows.append(dict(arch=arch, method=method, s=s, omega=om, k=k, n_states=ns,
+                             lam1=lam1.real, lam1_left=evl[1].real, lam2=lam2.real,
+                             res_right=res_r, res_left=res_l, backward_err=back, lam_rel_bound=bound,
+                             lam1_refined=lam_ref, res_right_refined=res_ref, P_U=PU, P_U_refined=PU_ref,
+                             k_U_met=a1 * (1 - PU), k_V_met=a1 * PU,
+                             k_U_met_refined=abs(lam_ref) * (1 - PU_ref), k_V_met_refined=abs(lam_ref) * PU_ref,
+                             sec=time.time() - t0))
+            print({a: (("%.6g" % b) if isinstance(b, float) else b) for a, b in rows[-1].items()}, flush=True)
+            pd.DataFrame(rows).to_csv(path, index=False)
+    set_box(7)
+
+
 if __name__ == "__main__":
     task = sys.argv[1]
+    if task == "spectral_check":
+        task_spectral_check([("H", 1.0, 1.0), ("P", 1.0, 1.0), ("S", 0.3, 1.0), ("Q", 0.3, 1.0)])
+        sys.exit(0)
     archs = sys.argv[2].split(",")
     oms = [float(v) for v in sys.argv[3].split(",")]
     s_list = [float(v) for v in sys.argv[4].split(",")] if len(sys.argv) > 4 else [1.0]

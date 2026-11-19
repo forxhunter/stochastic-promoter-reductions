@@ -11,6 +11,11 @@ Urbana-Champaign; submitted to the Journal of Theoretical Biology).
   in the first round of review (scripts `benchmarking/suite/revision_*.py` and
   `make_revision_tables.py`, results in `benchmarking_results/revision/`). The code
   and result files of v1.0 are unchanged.
+- `v1.2`: adds the checks made after an internal second review of the revision: the
+  architecture scan of the first-order coefficient (`revision_c1_scan.py`,
+  `c1_scan.csv`), convergence checks of the metastable toggle rates
+  (`revision_toggle_checks.py spectral_check`, `toggle_spectral_check.csv`), and label
+  changes in the figure and table scripts. Results of v1.1 are unchanged.
 
 ## Contents
 
@@ -38,6 +43,8 @@ Urbana-Champaign; submitted to the Journal of Theoretical Biology).
   | `revision_toggle_checks.py spectral ...` | metastable toggle rates from the spectral gap | `toggle_spectral_*.csv` |
   | `revision_boundary_exponent.py` | boundary exponent of the hybrid density for multistate promoters | `boundary_exponent.csv` |
   | `revision_eta_range.py` | range of the timescale ratio over the visited regulator range | `eta_range.csv` |
+  | `revision_c1_scan.py` | first-order coefficient c1 against control F across promoter architectures (no simulation) | `c1_scan.csv` |
+  | `revision_toggle_checks.py spectral_check` | eigenvector residuals and box-size convergence of the metastable toggle rates | `toggle_spectral_check.csv` |
   | `revision_figures.py OUTDIR` | Figure 5 and Supplementary Figure S3 | PDF files in OUTDIR |
   | `make_revision_tables.py OUTDIR` | Supplementary tables of the revision | LaTeX files in OUTDIR |
 
